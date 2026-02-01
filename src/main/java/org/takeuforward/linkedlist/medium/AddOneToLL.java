@@ -40,8 +40,8 @@ public class AddOneToLL {
             int currVal = integers.isEmpty() ? 0 : integers.pop();
             int value = currVal + carryOver;
             if (value > 9) {
-                curr.data = value - 10;
-                carryOver  = 1;
+                curr.data = value % 10;
+                carryOver  = value / 10;
             } else {
                 curr.data = value;
                 carryOver = 0;
@@ -70,7 +70,7 @@ public class AddOneToLL {
             int val = curr.data + carryForward;
 
             if (val > 9) {
-                curr.data = val - 10;
+                curr.data = val % 10;
                 carryForward = val / 10;
             } else {
                 curr.data = val;
