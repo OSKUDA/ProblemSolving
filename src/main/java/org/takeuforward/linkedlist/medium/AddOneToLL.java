@@ -2,6 +2,81 @@ package org.takeuforward.linkedlist.medium;
 
 import java.util.Stack;
 
+/**
+ * Problem:
+ * - Given a non-negative number represented as a singly linked list,
+ *   where each node contains a single digit (most significant digit first),
+ *   add 1 to the number and return the resulting linked list.
+ *
+ * Example:
+ * - 4 -> 5 -> 6  =>  4 -> 5 -> 7
+ * - 9 -> 9 -> 9  =>  1 -> 0 -> 0 -> 0
+ *
+ * Key Challenge:
+ * - Addition starts from the tail, but singly linked lists can only be
+ *   traversed forward.
+ *
+ * --------------------------------------------------------------------
+ * APPROACH 1: Stack-based (addOne)
+ * --------------------------------------------------------------------
+ * Idea:
+ * - Push all digits onto a stack.
+ * - Pop digits from the stack to simulate addition from the least
+ *   significant digit.
+ * - Handle carry and update nodes.
+ *
+ * Time Complexity: O(n)  (multiple passes)
+ * Space Complexity: O(n) (stack)
+ *
+ * Pros:
+ * - Straightforward and intuitive.
+ *
+ * Cons:
+ * - Uses extra memory.
+ *
+ * --------------------------------------------------------------------
+ * APPROACH 2: Reverse + Add + Reverse (addOne1)
+ * --------------------------------------------------------------------
+ * Idea:
+ * - Reverse the linked list.
+ * - Add 1 like a normal number with carry propagation.
+ * - Reverse the list back to restore original order.
+ *
+ * Time Complexity: O(n)
+ * Space Complexity: O(1)
+ *
+ * Pros:
+ * - Space-optimal.
+ * - Common interview solution.
+ *
+ * Cons:
+ * - Requires modifying the list twice.
+ *
+ * --------------------------------------------------------------------
+ * APPROACH 3: Recursive Carry Propagation (addOne2) ⭐
+ * --------------------------------------------------------------------
+ * Idea:
+ * - Use recursion to reach the tail.
+ * - Add 1 at the end and propagate carry backward.
+ * - If carry remains after processing head, prepend a new node.
+ *
+ * Time Complexity: O(n)
+ * Space Complexity: O(n) (recursion stack)
+ *
+ * Why this is elegant:
+ * - Naturally simulates digit-by-digit addition from right to left.
+ * - No explicit reversal or extra data structures.
+ *
+ * Interview Insight:
+ * - Best conceptual solution.
+ * - Reverse-based solution is space-optimal.
+ * - Recursive solution shows strong problem-solving skills.
+ *
+ * Final Takeaway:
+ * - Know all three approaches.
+ * - Prefer reverse-based for optimal space.
+ * - Use recursion to demonstrate deeper understanding.
+ */
 public class AddOneToLL {
 
     public static void main(String[] args) {
@@ -9,13 +84,13 @@ public class AddOneToLL {
         Node head = buildLL(4,5,6);
         printLL(head);
 
-        head = addOne1(head);
+        head = addOne2(head);
         printLL(head);
 
         head = buildLL(9,9,9);
         printLL(head);
 
-        head = addOne1(head);
+        head = addOne2(head);
         printLL(head);
 
     }
@@ -85,6 +160,36 @@ public class AddOneToLL {
             curr = curr.next;
         }
         return reverse(head);
+    }
+
+    /**
+     * Time complexity : O(n) 1 pass
+     * Space complexity : O(n) recursion stack
+     */
+    public static Node addOne2(Node head) {
+        if (head == null) return null;
+
+        int carry = add(head);
+        if (carry > 0) {
+            head = new Node(carry, head);
+        }
+        return head;
+    }
+
+    public static int add(Node node) {
+        if (node == null) {
+            return 1;
+        }
+        int carryOver = add(node.next);
+        int val = node.data + carryOver;
+        if (val > 9) {
+            node.data = val % 10;
+            carryOver = val / 10;
+        } else {
+            node.data = val;
+            carryOver = 0;
+        }
+        return carryOver;
     }
 
     public static Node reverse(Node head) {
