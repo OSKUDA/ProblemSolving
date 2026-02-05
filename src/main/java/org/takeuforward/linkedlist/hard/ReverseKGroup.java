@@ -87,6 +87,12 @@ public class ReverseKGroup {
         printLL(head);
         head = reverseGroup1(head, 3);
         printLL(head);
+
+        head = buildLL(1,2,3,4,5,6,7);
+        printLL(head);
+        head = reverseGroup2(head, 3);
+        printLL(head);
+
     }
 
 
@@ -148,6 +154,50 @@ public class ReverseKGroup {
         }
 
         return dummy.next == null ? head : dummy.next;
+    }
+
+    public static Node reverseGroup2(Node head, int k) {
+        Node dummy = new Node(0, head);
+
+        // Pointer to the tail of the last reversed group
+        Node groupPrev = dummy;
+
+        while(true) {
+            // Get the k-th node in the current group
+            Node kth = getKthNode(groupPrev, k);
+            if (kth == null) break;
+
+            // Store the next group’s head
+            Node groupNext = kth.next;
+
+            // Reverse the current k-group
+            Node prev = groupNext;
+            Node curr = groupPrev.next;
+
+            for (int i = 0; i < k; i++) {
+                Node temp = curr.next;
+                curr.next = prev;
+                prev = curr;
+                curr = temp;
+            }
+
+            // Connect the previous group to the reversed group
+            Node temp = groupPrev.next;
+            groupPrev.next = kth;
+            groupPrev = temp;
+        }
+
+        // return new head
+        return dummy.next;
+    }
+
+    // Helper function to get the k-th node from the current node
+    public static Node getKthNode(Node curr, int k) {
+        while (curr != null && k > 0) {
+            curr = curr.next;
+            k--;
+        }
+        return curr;
     }
 
     private static Node reverse(Node start, Node end) {
