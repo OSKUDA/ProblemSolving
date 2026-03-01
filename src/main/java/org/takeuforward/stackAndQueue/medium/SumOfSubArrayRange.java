@@ -12,7 +12,7 @@ public class SumOfSubArrayRange {
 
     /**
      * Time complexity : O(n^2)
-     * Space complexity : O(n)
+     * Space complexity : O(1)
      */
     public static long range(int[] nums) {
         if (nums == null || nums.length == 0) return 0;
