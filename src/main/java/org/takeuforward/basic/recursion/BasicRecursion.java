@@ -27,6 +27,11 @@ public class BasicRecursion {
         printFibonacciNumbers();
 
         System.out.println("5th Fibonacci number: "+printNthFibonacciNumber(5));
+
+        int n = 5;
+        int[] memo = new int[n + 1];
+        Arrays.fill(memo, -1);
+        System.out.println(n + "th Fibonacci number : " + printNthFibonacciNumberMemoization(n, memo));
     }
 
     /**
@@ -200,5 +205,23 @@ public class BasicRecursion {
         return printNthFibonacciNumber(n - 1) + printNthFibonacciNumber(n - 2);
     }
 
+    /**
+     * Time complexity : O(n)
+     * Space complexity : O(n)
+     */
+    public static int printNthFibonacciNumberMemoization(int n, int[] memo) {
+        if (n <= 1) {
+            return n;
+        }
+
+        // already calculated
+        if (memo[n] != -1) {
+            return memo[n];
+        }
+
+        memo[n] = printNthFibonacciNumberMemoization(n - 2, memo) + printNthFibonacciNumberMemoization(n - 1, memo);
+
+        return memo[n];
+    }
 
 }
