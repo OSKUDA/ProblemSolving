@@ -9,7 +9,7 @@ public class BasicMathQuestions {
         reverseDigitsOfaNumber();
         checkPalindrome();
         findGCF();
-        System.out.println(findGCFEuclidean(12, 12));
+        System.out.println(findGCFEuclidean(2, 9));
         findGCFEuclideanOptimal();
         isArmstrongNumber();
         fetchAllDivisors();
@@ -117,14 +117,14 @@ public class BasicMathQuestions {
     }
 
     public static void findGCFEuclideanOptimal() {
-        int a = 12;
-        int b = 24;
+        int a = 2;
+        int b = 9;
         while (b != 0) {
-            int temp = a;
+            int temp = b;
             b = a % b;
             a = temp;
         }
-        System.out.println("GCF is " + b);
+        System.out.println("GCF is : " + a);
     }
 
     /**
