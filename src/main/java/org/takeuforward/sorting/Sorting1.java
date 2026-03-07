@@ -63,16 +63,21 @@ public class Sorting1 {
 
     public static void insertionSort(int[] arr) {
         System.out.println("input arr: " + Arrays.toString(arr));
-        for (int i = 0; i < arr.length; i++) {
+
+        for (int i = 1; i < arr.length; i++) {
             int temp = arr[i];
             int curr = i;
-            while (curr - 1 >= 0 && temp < arr[curr - 1]) {
-                // shift
+
+            // shift elements to the right
+            while (curr > 0 && temp < arr[curr - 1]) {
                 arr[curr] = arr[curr - 1];
                 curr--;
             }
+
+            // insert element at correct position
             arr[curr] = temp;
         }
+
         System.out.println("sorted arr: " + Arrays.toString(arr));
     }
 }
