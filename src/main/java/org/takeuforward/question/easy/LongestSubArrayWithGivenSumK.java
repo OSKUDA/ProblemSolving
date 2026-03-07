@@ -92,25 +92,24 @@ public class LongestSubArrayWithGivenSumK {
      * Expanding and shrinking sliding window using 2 pointer approach.
      */
     private static int longestSubArrayWithGivenSumK3(int[] arr, int k) {
-        int left = 0, right = 0, len = 0, sum = arr[0];
-
+        int left = 0; int right = 0; int sum = 0;
+        int length = 0;
         while (right < arr.length) {
+            sum += arr[right];
 
-            // move left pointer, reduce sum
+            // shrink
             while (sum > k && left <= right) {
                 sum -= arr[left++];
             }
 
-            if (sum == k) {
-                len = Math.max(len, right - left + 1);
-            }
+            // check
+            if (sum == k) length = Math.max(length, right - left + 1);
 
+            // expand
             right++;
-            // move right pointer, increase sum
-            if (right < arr.length)
-                sum += arr[right];
         }
-        return len;
+
+        return length;
     }
 
     private static int numberOfAllPossibleCombination(int[] arr) {
