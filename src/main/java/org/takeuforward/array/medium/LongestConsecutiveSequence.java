@@ -1,4 +1,4 @@
-package org.takeuforward.question.medium;
+package org.takeuforward.array.medium;
 
 import java.util.Arrays;
 import java.util.HashSet;
