@@ -267,95 +267,97 @@ public class HeapImpl {
         ArrayList<Integer> heapsort = heap.heapsort();
         System.out.println("HeapSort : " + heapsort);
     }
+
+    private static class Heap<T extends Comparable<T>> {
+
+        private ArrayList<T> list;
+
+        public Heap() {
+            list = new ArrayList<>();
+        }
+
+        public void insert(T element) {
+            // insert at end
+            list.add(element);
+            // Heapify up
+            upHeap(list.size() - 1);
+        }
+
+        public T remove() throws Exception {
+            if (list.isEmpty()) {
+                throw new Exception("Removing from an empty list");
+            }
+            // remove root
+            T remove = list.get(0);
+            // remove last and replace
+            T last = list.remove(list.size() - 1);
+            if (!list.isEmpty()) {
+                list.set(0, last);
+                downHeap(0);
+            }
+            return remove;
+        }
+
+        private void upHeap(int i) {
+            if (i == 0) {
+                return;
+            }
+            int p = parent(i);
+            if (list.get(i).compareTo(list.get(p)) > 0) {
+                swap(i, p);
+                upHeap(p);
+            }
+        }
+
+        private void downHeap(int i) {
+            int min = i;
+            int l = left(i);
+            int r = right(i);
+
+            if (l < list.size() && list.get(l).compareTo(list.get(min)) > 0) {
+                min = l;
+            }
+            if (r < list.size() && list.get(r).compareTo(list.get(min)) > 0) {
+                min = r;
+            }
+            if (min != i) {
+                swap(min, i);
+                downHeap(min);
+            }
+        }
+
+        public ArrayList<T> heapsort() throws Exception {
+            ArrayList<T> data = new ArrayList<>();
+
+            while (!list.isEmpty()) {
+                data.add(remove());
+            }
+            return data;
+        }
+
+        public void print() {
+            System.out.println("Heap : " + list);
+        }
+
+        private void swap(int i, int j) {
+            T temp = list.get(i);
+            list.set(i, list.get(j));
+            list.set(j, temp);
+        }
+
+        private int left(int index) {
+            return (index * 2 + 1);
+        }
+
+        private int right(int index) {
+            return (index * 2 + 2);
+        }
+
+        private int parent(int index) {
+            return (index - 1) / 2;
+        }
+    }
+
 }
 
 
-class Heap<T extends Comparable<T>> {
-
-    private ArrayList<T> list;
-
-    public Heap() {
-        list = new ArrayList<>();
-    }
-
-    public void insert(T element) {
-        // insert at end
-        list.add(element);
-        // Heapify up
-        upHeap(list.size() - 1);
-    }
-
-    public T remove() throws Exception {
-        if (list.isEmpty()) {
-            throw new Exception("Removing from an empty list");
-        }
-        // remove root
-        T remove = list.get(0);
-        // remove last and replace
-        T last = list.remove(list.size() - 1);
-        if (!list.isEmpty()) {
-            list.set(0, last);
-            downHeap(0);
-        }
-        return remove;
-    }
-
-    private void upHeap(int i) {
-        if (i == 0) {
-            return;
-        }
-        int p = parent(i);
-        if (list.get(i).compareTo(list.get(p)) > 0) {
-            swap(i, p);
-            upHeap(p);
-        }
-    }
-
-    private void downHeap(int i) {
-        int min = i;
-        int l = left(i);
-        int r = right(i);
-
-        if (l < list.size() && list.get(l).compareTo(list.get(min)) > 0) {
-            min = l;
-        }
-        if (r < list.size() && list.get(r).compareTo(list.get(min)) > 0) {
-            min = r;
-        }
-        if (min != i) {
-            swap(min, i);
-            downHeap(min);
-        }
-    }
-
-    public ArrayList<T> heapsort() throws Exception {
-        ArrayList<T> data = new ArrayList<>();
-
-        while (!list.isEmpty()) {
-            data.add(remove());
-        }
-        return data;
-    }
-
-    public void print() {
-        System.out.println("Heap : " + list);
-    }
-
-    private void swap(int i, int j) {
-        T temp = list.get(i);
-        list.set(i, list.get(j));
-        list.set(j, temp);
-    }
-
-    private int left(int index) {
-        return (index * 2 + 1);
-    }
-
-    private int right(int index) {
-        return (index * 2 + 2);
-    }
-
-    private int parent(int index) {
-        return (index - 1) / 2;
-    }
-}
