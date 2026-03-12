@@ -3,6 +3,7 @@ package org.takeuforward.heap.medium;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.PriorityQueue;
+import java.util.Random;
 
 /**
  * <h2>Kth Largest Element in an Array</h2>
@@ -15,14 +16,15 @@ import java.util.PriorityQueue;
  * </p>
  *
  * <h3>Problem Statement</h3>
+ *
  * <p>
  * Given an integer array <b>nums</b> and an integer <b>k</b>, return the
  * <b>kth largest element</b> in the array.
  * </p>
  *
  * <ul>
- *     <li>The kth largest element is the element that would appear at position
- *     <b>k</b> if the array were sorted in descending order.</li>
+ *     <li>The kth largest element is the element at index <b>k-1</b> in a
+ *     <b>descending sorted array</b>.</li>
  *     <li>This is <b>NOT</b> the kth distinct element.</li>
  * </ul>
  *
@@ -31,14 +33,16 @@ import java.util.PriorityQueue;
  * <h3>Key Observations</h3>
  *
  * <ul>
- *     <li>Sorting the array would solve the problem easily.</li>
- *     <li>But sorting takes <b>O(n log n)</b>, which is unnecessary.</li>
- *     <li>Better solutions use:
- *         <ul>
- *             <li>Heap (Priority Queue)</li>
- *             <li>QuickSelect (optimal expected solution)</li>
- *         </ul>
- *     </li>
+ *     <li>Sorting the array solves the problem but costs <b>O(n log n)</b>.</li>
+ *     <li>The problem only asks for one element, so full sorting is unnecessary.</li>
+ *     <li>Better approaches focus on <b>partial ordering</b>.</li>
+ * </ul>
+ *
+ * <p><b>Common strategies:</b></p>
+ *
+ * <ul>
+ *     <li>Heap / Priority Queue</li>
+ *     <li>QuickSelect (selection algorithm)</li>
  * </ul>
  *
  * <hr>
@@ -46,14 +50,14 @@ import java.util.PriorityQueue;
  * <h3>Approach 1 — Max Heap (Heap Sort Idea)</h3>
  *
  * <p>
- * Build a <b>Max Heap</b> from the array. The root always contains the largest element.
- * Removing the root repeatedly gives elements in descending order.
+ * Convert the array into a <b>Max Heap</b>.
+ * The root always contains the largest element.
  * </p>
  *
  * <h4>Algorithm</h4>
  *
  * <ol>
- *     <li>Convert the array into a <b>Max Heap</b>.</li>
+ *     <li>Build a max heap from the array.</li>
  *     <li>Remove the root element <b>k</b> times.</li>
  *     <li>The kth removed element is the answer.</li>
  * </ol>
@@ -61,31 +65,23 @@ import java.util.PriorityQueue;
  * <h4>Complexity</h4>
  *
  * <ul>
- *     <li><b>Heap Build:</b> O(n)</li>
- *     <li><b>Remove k elements:</b> O(k log n)</li>
+ *     <li><b>Heap construction:</b> O(n)</li>
+ *     <li><b>k removals:</b> O(k log n)</li>
  *     <li><b>Total:</b> O(n + k log n)</li>
- *     <li><b>Space:</b> O(1) (in-place heap)</li>
+ *     <li><b>Space:</b> O(1)</li>
  * </ul>
- *
- * <h4>Intuition</h4>
- *
- * <p>
- * The largest element is always at the root.
- * Removing the root repeatedly gives the next largest elements.
- * </p>
  *
  * <hr>
  *
- * <h3>Approach 2 — Min Heap of Size K (Better Heap Approach)</h3>
+ * <h3>Approach 2 — Min Heap of Size K</h3>
  *
  * <p>
- * Maintain a <b>Min Heap</b> that keeps track of the <b>k largest elements</b>.
+ * Maintain a <b>Min Heap</b> containing the <b>k largest elements seen so far</b>.
  * </p>
  *
  * <h4>Algorithm</h4>
  *
  * <ol>
- *     <li>Create a <b>Min Heap</b>.</li>
  *     <li>Insert elements until heap size becomes <b>k</b>.</li>
  *     <li>For every new element:
  *         <ul>
@@ -93,48 +89,11 @@ import java.util.PriorityQueue;
  *             <li>Otherwise ignore it.</li>
  *         </ul>
  *     </li>
- *     <li>The heap root always contains the <b>kth largest element</b>.</li>
  * </ol>
  *
- * <h4>Why This Works</h4>
- *
  * <p>
- * The heap stores only the <b>k largest elements seen so far</b>.
- * The smallest among them (heap root) is the kth largest element.
+ * The heap root always represents the <b>kth largest element</b>.
  * </p>
- *
- * <h4>Complexity</h4>
- *
- * <ul>
- *     <li><b>Insertion:</b> O(log k)</li>
- *     <li><b>Processing n elements:</b> O(n log k)</li>
- *     <li><b>Space:</b> O(k)</li>
- * </ul>
- *
- * <h4>Why This Is Efficient</h4>
- *
- * <p>
- * Instead of maintaining the entire heap of size <b>n</b>,
- * we maintain only <b>k elements</b>.
- * This significantly reduces operations when <b>k &lt;&lt; n</b>.
- * </p>
- *
- * <hr>
- *
- * <h3>Approach 3 — PriorityQueue (Java Built-in Heap)</h3>
- *
- * <p>
- * Java's <b>PriorityQueue</b> is a <b>Min Heap by default</b>.
- * It can directly implement the previous approach.
- * </p>
- *
- * <h4>Algorithm</h4>
- *
- * <ol>
- *     <li>Create a <b>PriorityQueue</b>.</li>
- *     <li>Maintain heap size ≤ k.</li>
- *     <li>If new element is greater than heap root, replace it.</li>
- * </ol>
  *
  * <h4>Complexity</h4>
  *
@@ -145,38 +104,142 @@ import java.util.PriorityQueue;
  *
  * <hr>
  *
- * <h3>Optimal Approach — QuickSelect (To Study Later)</h3>
+ * <h3>Approach 3 — Java PriorityQueue</h3>
  *
  * <p>
- * QuickSelect is a partial quicksort algorithm that finds the kth element
- * without fully sorting the array.
+ * Java's <b>PriorityQueue</b> implements a <b>Min Heap</b>.
+ * This provides a direct implementation of the previous approach.
  * </p>
  *
- * <h4>Idea</h4>
+ * <h4>Complexity</h4>
  *
  * <ul>
- *     <li>Choose a pivot.</li>
- *     <li>Partition array into elements greater and smaller than pivot.</li>
- *     <li>Check pivot position.</li>
+ *     <li><b>Time:</b> O(n log k)</li>
+ *     <li><b>Space:</b> O(k)</li>
  * </ul>
  *
+ * <hr>
+ *
+ * <h3>Approach 4 — QuickSelect (Random Pivot + Lomuto Partition)</h3>
+ *
+ * <p>
+ * QuickSelect is derived from the <b>Quicksort partition algorithm</b>.
+ * Instead of sorting the whole array, it places one element into its
+ * correct sorted position and searches only one side.
+ * </p>
+ *
+ * <h4>Step 1 — Convert kth Largest → kth Smallest</h4>
+ *
+ * <pre>
+ * targetIndex = n - k
+ * </pre>
+ *
+ * Example:
+ *
+ * <pre>
+ * nums = [3,2,1,5,6,4]
+ * k = 2
+ *
+ * sorted ascending
+ * [1,2,3,4,5,6]
+ *
+ * targetIndex = 6 - 2 = 4
+ * answer = 5
+ * </pre>
+ *
+ * <h4>Lomuto Partition</h4>
+ *
+ * <pre>
+ * elements < pivot | pivot | elements >= pivot
+ * </pre>
+ *
+ * Random pivot helps avoid adversarial inputs.
+ *
+ * <h4>Complexity</h4>
+ *
  * <ul>
- *     <li>If pivot index == target → answer found</li>
- *     <li>If pivot index &lt; target → search right side</li>
- *     <li>If pivot index &gt; target → search left side</li>
+ *     <li><b>Average:</b> O(n)</li>
+ *     <li><b>Worst:</b> O(n²)</li>
+ * </ul>
+ *
+ * <p>
+ * Downside: Lomuto partition performs many swaps.
+ * </p>
+ *
+ * <hr>
+ *
+ * <h3>Approach 5 — QuickSelect (Mid Pivot + Hoare Partition)</h3>
+ *
+ * <p>
+ * This is an optimized QuickSelect variant that uses:
+ * </p>
+ *
+ * <ul>
+ *     <li><b>Middle element as pivot</b></li>
+ *     <li><b>Hoare partition scheme</b></li>
+ * </ul>
+ *
+ * <p>
+ * Hoare partition reduces swaps and improves constant factors.
+ * </p>
+ *
+ * <h4>Hoare Partition Idea</h4>
+ *
+ * Two pointers scan from both ends:
+ *
+ * <pre>
+ * i → move right while arr[i] < pivot
+ * j → move left while arr[j] > pivot
+ *
+ * swap(arr[i], arr[j])
+ * </pre>
+ *
+ * This continues until pointers cross.
+ *
+ * <h4>Why Hoare Partition Is Faster</h4>
+ *
+ * <ul>
+ *     <li>Fewer swaps than Lomuto partition</li>
+ *     <li>No need to move pivot to the end</li>
+ *     <li>Better cache performance</li>
  * </ul>
  *
  * <h4>Complexity</h4>
  *
  * <ul>
  *     <li><b>Average:</b> O(n)</li>
- *     <li><b>Worst case:</b> O(n²)</li>
+ *     <li><b>Worst:</b> O(n²)</li>
  *     <li><b>Space:</b> O(1)</li>
  * </ul>
  *
  * <p>
- * This is the <b>most optimal expected solution</b> for the problem.
+ * In practice this version is often the <b>fastest QuickSelect implementation</b>.
  * </p>
+ *
+ * <hr>
+ *
+ * <h3>Partition Schemes Comparison</h3>
+ *
+ * <table border="1">
+ * <tr>
+ *     <th>Partition Type</th>
+ *     <th>Swaps</th>
+ *     <th>Pivot Placement</th>
+ *     <th>Typical Usage</th>
+ * </tr>
+ * <tr>
+ *     <td>Lomuto</td>
+ *     <td>More swaps</td>
+ *     <td>Pivot moved to end</td>
+ *     <td>Simpler implementation</td>
+ * </tr>
+ * <tr>
+ *     <td>Hoare</td>
+ *     <td>Fewer swaps</td>
+ *     <td>Pivot not moved</td>
+ *     <td>Faster in practice</td>
+ * </tr>
+ * </table>
  *
  * <hr>
  *
@@ -187,41 +250,43 @@ import java.util.PriorityQueue;
  *     <th>Approach</th>
  *     <th>Time Complexity</th>
  *     <th>Space</th>
- *     <th>Notes</th>
  * </tr>
  * <tr>
  *     <td>Sorting</td>
  *     <td>O(n log n)</td>
  *     <td>O(1)</td>
- *     <td>Simple but unnecessary work</td>
  * </tr>
  * <tr>
  *     <td>Max Heap</td>
  *     <td>O(n + k log n)</td>
  *     <td>O(1)</td>
- *     <td>Remove max k times</td>
  * </tr>
  * <tr>
  *     <td>Min Heap (size k)</td>
  *     <td>O(n log k)</td>
  *     <td>O(k)</td>
- *     <td>Most common interview solution</td>
  * </tr>
  * <tr>
- *     <td>QuickSelect</td>
- *     <td>O(n) average</td>
+ *     <td>QuickSelect (Lomuto)</td>
+ *     <td>O(n) avg</td>
  *     <td>O(1)</td>
- *     <td>Optimal expected solution</td>
+ * </tr>
+ * <tr>
+ *     <td>QuickSelect (Hoare)</td>
+ *     <td>O(n) avg</td>
+ *     <td>O(1)</td>
  * </tr>
  * </table>
  *
  * <hr>
  *
- * <h3>Interview Takeaway</h3>
+ * <h3>Interview Takeaways</h3>
  *
  * <ul>
- *     <li>If heap is allowed → use <b>Min Heap of size k</b>.</li>
- *     <li>If optimal solution is required → use <b>QuickSelect</b>.</li>
+ *     <li>Min Heap is the easiest interview solution.</li>
+ *     <li>QuickSelect gives optimal expected time.</li>
+ *     <li>Random pivot prevents adversarial inputs.</li>
+ *     <li>Hoare partition improves performance by reducing swaps.</li>
  * </ul>
  *
  */
@@ -231,44 +296,68 @@ public class FindKthLargest {
         int k = 2;
         System.out.println("Input arr : " + Arrays.toString(arr));
         System.out.println("K : " + k);
-        System.out.println("Kth largest is : " + removeKthLargest(arr, k));
+        System.out.println("Kth largest is : " + findKthLargest(arr, k));
 
         arr = new int[]{3,2,3,1,2,4,5,5,6};
         k = 4;
         System.out.println("Input arr : " + Arrays.toString(arr));
         System.out.println("K : " + k);
-        System.out.println("Kth largest is : " + removeKthLargest(arr, k));
+        System.out.println("Kth largest is : " + findKthLargest(arr, k));
 
         arr = new int[]{3,2,1,5,6,4};
         k = 2;
         System.out.println("Input arr : " + Arrays.toString(arr));
         System.out.println("K : " + k);
-        System.out.println("Kth largest is : " + removeKthLargest1(arr, k));
+        System.out.println("Kth largest is : " + findKthLargest1(arr, k));
 
         arr = new int[]{3,2,3,1,2,4,5,5,6};
         k = 4;
         System.out.println("Input arr : " + Arrays.toString(arr));
         System.out.println("K : " + k);
-        System.out.println("Kth largest is : " + removeKthLargest1(arr, k));
+        System.out.println("Kth largest is : " + findKthLargest1(arr, k));
 
         arr = new int[]{3,2,1,5,6,4};
         k = 2;
         System.out.println("Input arr : " + Arrays.toString(arr));
         System.out.println("K : " + k);
-        System.out.println("Kth largest is : " + removeKthLargest2(arr, k));
+        System.out.println("Kth largest is : " + findKthLargest2(arr, k));
 
         arr = new int[]{3,2,3,1,2,4,5,5,6};
         k = 4;
         System.out.println("Input arr : " + Arrays.toString(arr));
         System.out.println("K : " + k);
-        System.out.println("Kth largest is : " + removeKthLargest2(arr, k));
+        System.out.println("Kth largest is : " + findKthLargest2(arr, k));
+
+        arr = new int[]{3,2,1,5,6,4};
+        k = 2;
+        System.out.println("Input arr : " + Arrays.toString(arr));
+        System.out.println("K : " + k);
+        System.out.println("Kth largest is : " + findKthLargest3(arr, k));
+
+        arr = new int[]{3,2,3,1,2,4,5,5,6};
+        k = 4;
+        System.out.println("Input arr : " + Arrays.toString(arr));
+        System.out.println("K : " + k);
+        System.out.println("Kth largest is : " + findKthLargest3(arr, k));
+
+        arr = new int[]{3,2,1,5,6,4};
+        k = 2;
+        System.out.println("Input arr : " + Arrays.toString(arr));
+        System.out.println("K : " + k);
+        System.out.println("Kth largest is : " + findKthLargest4(arr, k));
+
+        arr = new int[]{3,2,3,1,2,4,5,5,6};
+        k = 4;
+        System.out.println("Input arr : " + Arrays.toString(arr));
+        System.out.println("K : " + k);
+        System.out.println("Kth largest is : " + findKthLargest4(arr, k));
     }
 
     /**
      * Time complexity : O(n + k log(n))
      * Space complexity : O(1)
      */
-    private static int removeKthLargest(int[] arr, int k) {
+    private static int findKthLargest(int[] arr, int k) {
         // build max heap
         buildHeap(arr);
 
@@ -284,7 +373,7 @@ public class FindKthLargest {
      * Time complexity : O(n * (log(k) + log(k))) -> O(n * 2log(k)) -> O(n * log(k))
      * Space complexity : O(k)
      */
-    private static int removeKthLargest1(int[] arr, int k) {
+    private static int findKthLargest1(int[] arr, int k) {
         ArrayList<Integer> minHeap = new ArrayList<>();
         for (int element : arr) {
             if (minHeap.size() >= k) {
@@ -304,7 +393,7 @@ public class FindKthLargest {
      * Time complexity : O(n * log(k))
      * Space complexity : O(k)
      */
-    private static int removeKthLargest2(int[] arr, int k) {
+    private static int findKthLargest2(int[] arr, int k) {
         PriorityQueue<Integer> priorityQueue = new PriorityQueue<>();
         for (int element : arr) {
             if (priorityQueue.size() >= k) {
@@ -319,6 +408,99 @@ public class FindKthLargest {
         }
         return priorityQueue.peek();
     }
+
+    /**
+     * Time complexity : O(n)
+     * Space complexity : O(1)
+     * Note : random pivot and lomuto partition
+     */
+    private static int findKthLargest3(int[] arr, int k) {
+        int target = arr.length - k;
+        int left = 0;
+        int right = arr.length - 1;
+        while (true) {
+            int pivotIndex = partition(arr, left, right);
+
+            if (pivotIndex == target) return arr[pivotIndex];
+
+            if (pivotIndex > target) {
+                // search left
+                right = pivotIndex - 1;
+            } else {
+                // search right
+                left = pivotIndex + 1;
+            }
+        }
+    }
+
+    /**
+     * Time complexity : O(n)
+     * Space complexity : O(1)
+     * Note : Uses mid-pivot and hoare partitioning
+     * It's relatively faster because of less swap()
+     */
+    private static int findKthLargest4(int[] arr, int k) {
+        int target = arr.length - k;
+
+        int left = 0;
+        int right = arr.length - 1;
+
+        while (left <= right) {
+
+            int pivot = arr[left + (right - left) / 2];
+
+            int i = left;
+            int j = right;
+
+            while (i <= j) {
+
+                while (arr[i] < pivot) i++;
+                while (arr[j] > pivot) j--;
+
+                if (i <= j) {
+                    swap(arr, i, j);
+                    i++;
+                    j--;
+                }
+            }
+
+            if (target <= j) {
+                right = j;
+            }
+            else if (target >= i) {
+                left = i;
+            }
+            else {
+                return arr[target];
+            }
+        }
+
+        return -1;
+    }
+
+
+    private static final Random RANDOM = new Random();
+
+    private static int partition(int[] arr, int left, int right) {
+        // pick random pivot index
+        int pivotIndex = left + RANDOM.nextInt(right - left + 1);
+
+        // move pivot to end
+        swap(arr, pivotIndex, right);
+
+        int pivot = arr[right];
+        int partition = left;
+        for (int i = left; i < right; i++) {
+            if (arr[i] < pivot) {
+                swap(arr, i, partition);
+                partition++;
+            }
+        }
+        // put pivot in its correct place
+        swap(arr, partition, right);
+        return partition;
+    }
+
 
     private static int remove(ArrayList<Integer> arr) {
         int removed = arr.get(0);
