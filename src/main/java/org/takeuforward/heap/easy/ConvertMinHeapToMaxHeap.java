@@ -169,7 +169,7 @@ import java.util.Arrays;
  */
 public class ConvertMinHeapToMaxHeap {
     public static void main(String[] args) {
-        int[] arr = {10, 20, 30, 21, 23};
+        int[] arr = {3,2,1,5,6,4};
         System.out.println("Input : " + Arrays.toString(arr));
         System.out.println("Output : " + Arrays.toString(buildHeap(arr)));
     }
@@ -179,7 +179,7 @@ public class ConvertMinHeapToMaxHeap {
      * Space complexity : O(1)
      */
     private static int[] buildHeap(int[] arr) {
-        for (int i = arr.length / 2 - 1; i >= 0; i--) {
+        for (int i = (arr.length / 2) - 1; i >= 0; i--) {
             downHeap(arr, i);
         }
         return arr;
@@ -193,10 +193,10 @@ public class ConvertMinHeapToMaxHeap {
         int max = i;
         int l = left(i);
         int r = right(i);
-        if (l < arr.length && arr[l] > arr[i]) {
+        if (l < arr.length && arr[l] > arr[max]) {
             max = l;
         }
-        if (r < arr.length && arr[r] > arr[i]) {
+        if (r < arr.length && arr[r] > arr[max]) {
             max = r;
         }
         if (max != i) {
